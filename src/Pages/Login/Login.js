@@ -27,6 +27,7 @@ import auth from "../../firebase.init";
      <form onSubmit={handleSubmit(onSubmit)}>
 
      <div className="form-control w-full max-w-xs">
+       {/* Email Field  */}
         <label className="label">
           <span className="label-text">Email</span>
         </label>
@@ -35,35 +36,48 @@ import auth from "../../firebase.init";
             placeholder="Enter Your Email" 
             className="input input-bordered w-full max-w-xs"
             {...register("email", {
+              required :{
+                value: true,
+                message: "Email is Require!"
+              },
               pattern: {
-                value: /[A-Za-z]{3}/,
-                message: 'error message'
+                value: /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/,
+                message: 'Provide a valid email!'
               }
             })}
             />
         <label className="label">
-          <span className="label-text-alt">Alt label</span>
+        {errors.email?.type === 'required' && <p className="text-red-500" role="alert">{errors.email.message}</p>}
+        {errors.email?.type === 'pattern' && <p className="text-red-500" role="alert">{errors.email.message}</p>}
         </label>
-    </div>
+     </div>
+     {/* Password Field  */}
+     <div className="form-control w-full max-w-xs">
+        <label className="label">
+          <span className="label-text">Password</span>
+        </label>
+        <input 
+            type="password" 
+            placeholder="Enter Your Password" 
+            className="input input-bordered w-full max-w-xs"
+            {...register("password", {
+              required :{
+                value: true,
+                message: "Password is Require!"
+              },
+              minLength: {
+                value: 6,
+                message: 'Must be 6 characters or longer!'
+              }
+            })}
+            />
+        <label className="label">
+        {errors.password?.type === 'required' && <p className="text-red-500" role="alert">{errors.password.message}</p>}
+        {errors.password?.type === 'minLength' && <p className="text-red-500" role="alert">{errors.password.message}</p>}
+        </label>
+     </div>
 
-
-
-
-        <input
-        
-        aria-invalid={errors.firstName ? "true" : "false"}
-        />
-        {errors.firstName?.type === "required" && (
-        <p role="alert">First name is required</p>
-        )}
-
-        <input
-        {...register("mail", { required: "Email Address is required" })}
-        aria-invalid={errors.mail ? "true" : "false"}
-        />
-        {errors.mail && <p role="alert">{errors.mail?.message}</p>}
-
-        <input type="submit" />
+        <input className="btn w-full max-w-xs text-white" type="submit" value="Login" />
      </form>
      <div className="divider">OR</div>
       <button onClick={() => signInWithGoogle()} 
