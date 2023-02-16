@@ -1,11 +1,12 @@
-import React from "react";
-import { useSignInWithEmailAndPassword, useSignInWithGoogle } from "react-firebase-hooks/auth";
+import React from 'react';
+import { useCreateUserWithEmailAndPassword, useSignInWithGoogle } from "react-firebase-hooks/auth";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import auth from "../../firebase.init";
 import Loading from "../Shared/Loading/Loading";
 
- const Login = () => {
+const SignUp = () => {
+
   const [signInWithGoogle, gUser, gLoading, gError] = useSignInWithGoogle(auth);
     const {
     register,
@@ -13,11 +14,11 @@ import Loading from "../Shared/Loading/Loading";
     handleSubmit,
     } = useForm();
     const [
-      signInWithEmailAndPassword,
+      createUserWithEmailAndPassword,
       user,
       loading,
       error,
-  ] = useSignInWithEmailAndPassword(auth);
+    ] = useCreateUserWithEmailAndPassword(auth);
 
     let signInError;
 
@@ -35,15 +36,36 @@ import Loading from "../Shared/Loading/Loading";
 
     const onSubmit = data => {
       console.log(data);
-      signInWithEmailAndPassword(data.email, data.password);
+      createUserWithEmailAndPassword(data.name, data.password);
     };
- 
- return (
-  <div className="flex h-screen justify-center items-center">
+
+  return (
+    <div className="flex h-screen justify-center items-center">
    <div className="card w-96 bg-base-100 shadow-xl">
     <div className="card-body">
-     <h2 className="text-center text-2xl font-bold">Login</h2>
+     <h2 className="text-center text-2xl font-bold">Sign UP</h2>
      <form onSubmit={handleSubmit(onSubmit)}>
+
+     <div className="form-control w-full max-w-xs">
+       {/* Name Field  */}
+        <label className="label">
+          <span className="label-text">Name</span>
+        </label>
+        <input 
+            type="text" 
+            placeholder="Enter Your Name" 
+            className="input input-bordered w-full max-w-xs"
+            {...register("name", {
+              required :{
+                value: true,
+                message: "Name is Require"
+              }
+            })}
+            />
+        <label className="label">
+        {errors.name?.type === 'required' && <p className="text-red-500" role="alert">{errors.name.message}</p>}
+        </label>
+     </div>
 
      <div className="form-control w-full max-w-xs">
        {/* Email Field  */}
@@ -51,25 +73,26 @@ import Loading from "../Shared/Loading/Loading";
           <span className="label-text">Email</span>
         </label>
         <input 
-            type="email" 
+            type="name" 
             placeholder="Enter Your Email" 
             className="input input-bordered w-full max-w-xs"
-            {...register("email", {
+            {...register("name", {
               required :{
                 value: true,
                 message: "Email is Require"
               },
               pattern: {
                 value: /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/,
-                message: 'Provide a valid email!'
+                message: 'Provide a valid name!'
               }
             })}
             />
         <label className="label">
-        {errors.email?.type === 'required' && <p className="text-red-500" role="alert">{errors.email.message}</p>}
-        {errors.email?.type === 'pattern' && <p className="text-red-500" role="alert">{errors.email.message}</p>}
+        {errors.name?.type === 'required' && <p className="text-red-500" role="alert">{errors.name.message}</p>}
+        {errors.name?.type === 'pattern' && <p className="text-red-500" role="alert">{errors.name.message}</p>}
         </label>
      </div>
+
      {/* Password Field  */}
      <div className="form-control w-full max-w-xs">
         <label className="label">
@@ -96,9 +119,9 @@ import Loading from "../Shared/Loading/Loading";
         </label>
      </div>
         {signInError}
-        <input className="btn w-full max-w-xs text-white" type="submit" value="Login" />
+        <input className="btn w-full max-w-xs text-white" type="submit" value="Sign Up" />
      </form>
-     <p className="text-center"><small>New to Doctors Portal ? <Link className="text-primary" to="/signUp">Create New Account</Link></small></p>
+     <p className="text-center"><small>Already have an account ? <Link className="text-primary" to="/login">Please login</Link></small></p>
      <div className="divider">OR</div>
       <button onClick={() => signInWithGoogle()} 
         className="btn btn-outline">
@@ -107,7 +130,7 @@ import Loading from "../Shared/Loading/Loading";
     </div>
    </div>
   </div>
- );
+  );
 };
 
-export default Login;
+export default SignUp;
